@@ -1,0 +1,42 @@
+{% load cms_tags menu_tags cache i18n %}
+
+{% for child in children %}
+  {% if not child.is_leaf_node or child.ancestor %}
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href=#" id="navbar{{child.get_menu_title }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{child.get_menu_title }}
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbar{{child.get_menu_title }}">
+        {% if child.get_descendants %}
+          {% for kid in child.get_descendants %}
+          <ul class="nav ">
+            <li class="nav-item">
+              <a class="dropdown-item" href="{{ kid.get_absolute_url }}">
+                {{kid.get_menu_title }}
+              </a>  
+            </li>
+          </ul>
+          {% endfor %}
+        {% endif %}
+      </div>
+  {% else %}
+    <li class="nav-item">
+        <a class="nav-link " 
+           href="{{ child.attr.redirect_url|default:child.get_absolute_url }}">{{ child.get_menu_title }}
+        </a>
+    </li>
+  {% endif %}
+{% endfor %}
+    {% if user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link " 
+           href="/accounts/logout">Cerrar Sesion
+        </a>
+    </li>
+    {% else %}
+      <li class="nav-item">
+          <a class="nav-link " 
+             href="/accounts/login">Iniciar Sesion
+          </a>
+      </li>
+    {% endif %}
